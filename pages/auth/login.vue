@@ -28,14 +28,13 @@
           <LockOutlined class="site-form-item-icon" />
         </template>
       </a-input-password>
+      <span v-if="passwordError" class="error-text">
+        {{ passwordError }}
+      </span>
     </a-form-item>
 
     <a-form-item>
-      <a-form-item name="remember" no-style>
-        <a-checkbox v-model:checked="formState.remember"
-          >Remember me</a-checkbox
-        >
-      </a-form-item>
+      <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
       <a class="login-form-forgot" href="">Forgot password</a>
     </a-form-item>
 
@@ -48,81 +47,92 @@
       >
         Log in
       </a-button>
-      Or  <NuxtLink to="/auth/register"> register now!</NuxtLink>
+      Or <NuxtLink to="/auth/register"> register now!</NuxtLink>
     </a-form-item>
   </a-form>
 </template>
-<script lang="ts" setup>
-import { reactive, computed } from "vue";
+
+<script setup lang="ts">
+import { reactive, computed, ref } from "vue";
 import { UserOutlined, LockOutlined } from "@ant-design/icons-vue";
-import { useRouter } from "vue-router";
-const router = useRouter();
-definePageMeta({layout : false})
+import { useAuthStore } from "~/stores/auth";
+import { navigateTo } from "#app";
+definePageMeta({
+  middleware:'auth'
+});
+// Không sử dụng layout mặc định
+definePageMeta({ layout: false });
+
+const authStore = useAuthStore();
+const passwordError = ref("");
+
 interface FormState {
   username: string;
   password: string;
   remember: boolean;
 }
+
 const formState = reactive<FormState>({
   username: "",
   password: "",
   remember: true,
 });
-console.log(formState.username + formState.password);
-const onFinishFailed = (errorInfo: any) => {
-  console.log("Failed:", errorInfo);
-};
+
 const disabled = computed(() => {
   return !(formState.username && formState.password);
 });
-const layout = {
-  labelCol: {
-    span: 4,
-  },
-  wrapperCol: {
-    span: 14,
-  },
+
+const onFinishFailed = (errorInfo: any) => {
+  console.log("Failed:", errorInfo);
 };
+
 const onFinish = async () => {
   try {
-    const { data, error } = await useFetch<{ token?: string }>("http://localhost:5278/api/Account/Signin", {
-      method: "POST",
-      body: {
-        email: formState.username,
-        password: formState.password,
-      },
-    });
-
-    if (error.value) {
-      console.error("Đăng nhập thất bại:", error.value);
-      alert("Tên đăng nhập hoặc mật khẩu không đúng!");
+    if (!formState.password) {
+      passwordError.value = "Vui lòng nhập mật khẩu";
       return;
+    } else if (formState.password.length < 6) {
+      passwordError.value = "Mật khẩu phải có ít nhất 6 ký tự";
+      return;
+    } else {
+      passwordError.value = "";
     }
 
-    if (data.value) {
-      // // Lưu token vào cookie
-      // document.cookie = `authToken=${encodeURIComponent(
-      //   data.value.token
-      // )}; max-age=86400; path=/; secure; SameSite=Strict`;
+    const response = await $fetch<{ token?: string }>(
+      "http://localhost:5278/api/Account/Signin",
+      {
+        method: "POST",
+        body: {
+          email: formState.username,
+          password: formState.password,
+        },
+      }
+    );
 
-      // Chuyển hướng đến trang quản trị
-      router.push("/"); 
+    if (response?.token) {
+      authStore.setToken(response.token); // Lưu token vào store
+      navigateTo("/"); // Chuyển hướng đến trang chính
     } else {
-      alert("Đăng nhập thất bại!");
+      alert("Tên đăng nhập hoặc mật khẩu không đúng!");
     }
   } catch (err) {
     console.error("Lỗi khi gửi request:", err);
+    alert("Đăng nhập thất bại!");
   }
 };
 </script>
+
 <style scoped>
-#components-form-demo-normal-login .login-form {
+.login-form {
   max-width: 300px;
 }
-#components-form-demo-normal-login .login-form-forgot {
+.login-form-forgot {
   float: right;
 }
-#components-form-demo-normal-login .login-form-button {
+.login-form-button {
   width: 100%;
+}
+.error-text {
+  color: red;
 }
 </style>

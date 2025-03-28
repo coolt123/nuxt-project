@@ -1,33 +1,57 @@
-<template>
-  <a-layout style="min-height: 100vh;">
-    <!-- Sidebar -->
-    <Sidebar />
-
-    <a-layout style="flex-direction: column;">
-      <!-- Header -->
-      <Header />
-
-      <!-- Content Area -->
-      <a-layout-content class="content">
-        <slot></slot>
-      </a-layout-content>
-      <a-layout-footer :style="{ textAlign: 'center' }">
-        Ant Design ©2018 Created by Ant UED
-      </a-layout-footer>
-    </a-layout>
-  </a-layout>
-</template>
-
-<script lang="ts" setup>
-import Sidebar from "~/components/Sidebar.vue";
-import Header from "~/components/Header.vue";
+<script setup lang="ts">
+import Header from '~/components/Header.vue';
+const auth = useAuthStore();
+watchEffect(() => {
+  if (!auth.isAuthenticated) {
+    navigateTo('/auth/login' ); 
+  }
+});
 </script>
 
+<template>
+  <div class="layout">
+    <header>
+      <Header />
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <p>© 2025 - Footer chung</p>
+    </footer>
+  </div>
+</template>
+
 <style scoped>
-.content {
+/* Bố cục chung */
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Chiều cao tối thiểu 100% viewport */
+}
+
+/* Header */
+header {
+  background: rgb(115, 241, 132);
+  color: black;
+  padding:10px 0px 0px 0px;
+  text-align: center;
+  height: 50px;
+}
+
+/* Main chiếm phần còn lại của trang */
+main {
+  flex: 1; /* Tự động mở rộng để đẩy footer xuống */
   padding: 20px;
-  background: #fff;
-  flex: 1;
-  margin-top: 64px; /* Đẩy content xuống để tránh bị Header che */
+}
+
+/* Footer luôn nằm dưới cùng */
+footer {
+  background: #222;
+  color: white;
+  text-align: center;
+  padding: 10px;
 }
 </style>

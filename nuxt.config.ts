@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true } , 
   modules: [
-    '@ant-design-vue/nuxt'
+    '@ant-design-vue/nuxt','@pinia/nuxt'
   ],
   ssr : true,
   nitro: {
@@ -13,4 +13,4 @@ export default defineNuxtConfig({
     }
   },
   
-})
+});
