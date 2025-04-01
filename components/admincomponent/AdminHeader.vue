@@ -101,14 +101,18 @@
         <NuxtLink to="/home"> Home</NuxtLink>
       </a-menu-item>
       <a-menu-item key="2"> <NuxtLink to="/"> Home</NuxtLink></a-menu-item>
-      <a-menu-item key="3">
+      <a-menu-item key="3"> <NuxtLink to="/auth/login1"> login1</NuxtLink></a-menu-item>
+      <a-menu-item key="4">
         <NuxtLink to="/auth/register"> register</NuxtLink></a-menu-item
+      >
+      <a-menu-item key="4"><Usericon/></a-menu-item
       >
     </a-menu>
   </a-layout-header>
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
+import Usericon from "../Usericon.vue";
 const selectedKeys = ref<string[]>(["2"]);
 </script>
 <style scoped></style>
