@@ -44,9 +44,9 @@
 </template>
 <script setup lang="ts">
 import { object, string } from "yup";
-import { useAuthStore } from "~/stores/auth";
 import { UserOutlined, LockOutlined } from "@ant-design/icons-vue";
 import { navigateTo } from "#app";
+import { useAuth } from "~/composable/useAuth";
 definePageMeta({
   layout: false,
 });
@@ -56,8 +56,7 @@ onBeforeMount(() => {
   // Giả lập trễ 0.5s để kiểm tra
 });
 // Store Auth
-const authStore = useAuthStore();
-
+const {login , isAuthenticated,token,getEmail,getRole} = useAuth();
 // Schema Validation
 const schema = object({
   username: string().required("Vui lòng nhập tên đăng nhập").email(),
@@ -69,7 +68,7 @@ const schema = object({
 // Xử lý Submit
 const onFinish = async (values: any) => {
   try {
-    const response = await $fetch<{ token?: string }>(
+    const response = await $fetch <string>(
       "http://localhost:5278/api/Account/Signin",
       {
         method: "POST",
@@ -82,10 +81,15 @@ const onFinish = async (values: any) => {
         },
       }
     );
-    console.log(response);
-    if (response?.token) {
-      authStore.setToken(response.token);
-      navigateTo("/admin");
+  
+    if (response) {
+      login(response);  
+      const checkmail = getEmail();
+        console.log('isAuthenticated after login:', isAuthenticated.value);
+        console.log('geteamil',checkmail);
+        const roles = getRole();
+        console.log('getrole',roles);
+      navigateTo("/");
     } else {
       alert("Tên đăng nhập hoặc mật khẩu không đúng!");
     }

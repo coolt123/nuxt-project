@@ -1,9 +1,9 @@
 <template>
-  <a-layout style="min-height: 100vh;" v-if="isAntdReady">
+  <a-layout style="min-height: 100vh" v-if="isAntdReady">
     <!-- Sidebar -->
     <AdminSidebar />
 
-    <a-layout style="flex-direction: column;">
+    <a-layout style="flex-direction: column">
       <!-- Header -->
       <AdminHeader />
 
@@ -16,21 +16,29 @@
       </a-layout-footer>
     </a-layout>
   </a-layout>
-  <div v-else>
-    .....Đang tải giao diện
-  </div>
+  <div v-else>.....Đang tải giao diện</div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import AdminSidebar from "~/components/admincomponent/AdminSidebar.vue";
 import AdminHeader from "~/components/admincomponent/AdminHeader.vue";
 import { ref, onBeforeMount } from "vue";
+import { useAuth } from "~/composable/useAuth";
 const isAntdReady = ref(false);
-
+const router = useRouter();
+const { getRole } = useAuth();
 onBeforeMount(() => {
-    isAntdReady.value = true;
- // Giả lập trễ 0.5s để kiểm tra
+  const role = getRole();
+  // Kiểm tra vai trò người dùng ngay khi trang admin được tải
+  if (role !== "Adminisrtator") {
+    // Nếu không phải là admin, chuyển hướng về trang chính
+    router.push("/");
+  } else {
+    isAntdReady.value = true; // Set flag khi chuẩn bị sẵn sàng
+  }
 });
+
+
 </script>
 
 <style scoped>

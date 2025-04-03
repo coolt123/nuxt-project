@@ -1,11 +1,5 @@
 <script setup lang="ts">
 import Header from '~/components/Header.vue';
-const auth = useAuthStore();
-watchEffect(() => {
-  if (!auth.isAuthenticated) {
-    navigateTo('/auth/login' ); 
-  }
-});
 </script>
 
 <template>
@@ -34,7 +28,7 @@ watchEffect(() => {
 
 /* Header */
 header {
-  background: rgb(115, 241, 132);
+  background: black;
   color: black;
   padding:10px 0px 0px 0px;
   text-align: center;

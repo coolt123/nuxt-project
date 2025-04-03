@@ -43,11 +43,20 @@
   </div>
 </template>
 
-<script setup>
+<script setup >
 import { reactive, ref } from "vue";
-
+import { useRoute, useRouter } from "vue-router";
+const route = useRoute();
+const router = useRouter();
+const token = ref("");
+const email = ref("");
 const formRef = ref();
 definePageMeta({ layout: false });
+onMounted(() => {
+  token.value = route.query.token || "";
+  email.value = route.query.email || "";
+  console.log(token.value);
+});
 
 const formState = reactive({
   pass: "",
@@ -121,13 +130,15 @@ const handleFinish = async () => {
       {
         method: "POST",
         body: {
+          email:email.value,
+          token:token.value,
           password: formState.pass,
           confirmPassword: formState.checkPass,
         },
       }
       
     );
-
+    console.log(data)
     if (error.value) {
       console.error("Reset password failed:", error.value);
       isDone.value=true
