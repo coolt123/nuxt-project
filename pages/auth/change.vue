@@ -86,9 +86,10 @@ const rules = {
 
 const handleFinish = async () => {
   try {
-    const { data, error } = await useFetch("http://localhost:5278/api/Account/ChangePassword", {
+    const { data, error } = await useFetch("http://localhost:5278/api/Account/changepass", {
       method: "POST",
-      body: { currentPassword: formState.currentPass, newPassword: formState.newPass , email:email },
+      credentials:'include',
+      body: { currentPassword: formState.currentPass, newPassword: formState.newPass },
     });
 
     if (error.value) {
@@ -120,7 +121,7 @@ const handleValidate = (...args) => {
 };
 
 const returnToLogin = () => {
-  navigateTo("/auth/login");
+  navigateTo("/home");
 };
 </script>
 

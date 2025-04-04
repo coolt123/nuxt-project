@@ -47,16 +47,19 @@ import { object, string } from "yup";
 import { UserOutlined, LockOutlined } from "@ant-design/icons-vue";
 import { navigateTo } from "#app";
 import { useAuth } from "~/composable/useAuth";
+import { useRouter } from "vue-router";
 definePageMeta({
   layout: false,
+  middleware:'authentication',
 });
 const isAntdReady = ref(false);
 onBeforeMount(() => {
   isAntdReady.value = true;
   // Giả lập trễ 0.5s để kiểm tra
+  
 });
 // Store Auth
-const {login , isAuthenticated,token,getEmail,getRole} = useAuth();
+const { login, isAuthenticated, token, getEmail, getRole } = useAuth();
 // Schema Validation
 const schema = object({
   username: string().required("Vui lòng nhập tên đăng nhập").email(),
@@ -68,7 +71,7 @@ const schema = object({
 // Xử lý Submit
 const onFinish = async (values: any) => {
   try {
-    const response = await $fetch <string>(
+    const response = await $fetch<string>(
       "http://localhost:5278/api/Account/Signin",
       {
         method: "POST",
@@ -81,14 +84,14 @@ const onFinish = async (values: any) => {
         },
       }
     );
-  
+
     if (response) {
-      login(response);  
+      login(response);
       const checkmail = getEmail();
-        console.log('isAuthenticated after login:', isAuthenticated.value);
-        console.log('geteamil',checkmail);
-        const roles = getRole();
-        console.log('getrole',roles);
+      console.log("isAuthenticated after login:", isAuthenticated.value);
+      console.log("geteamil", checkmail);
+      const roles = getRole();
+      console.log("getrole", roles);
       navigateTo("/");
     } else {
       alert("Tên đăng nhập hoặc mật khẩu không đúng!");

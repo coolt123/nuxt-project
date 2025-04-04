@@ -43,7 +43,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 const formRef = ref();
-definePageMeta({layout:"admin"})
+definePageMeta({layout:"admin",middleware:'authentication'})
 const formState = reactive({
   username: "",
   pass: "",

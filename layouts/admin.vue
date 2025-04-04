@@ -29,12 +29,10 @@ const router = useRouter();
 const { getRole } = useAuth();
 onBeforeMount(() => {
   const role = getRole();
-  // Kiểm tra vai trò người dùng ngay khi trang admin được tải
   if (role !== "Adminisrtator") {
-    // Nếu không phải là admin, chuyển hướng về trang chính
     router.push("/");
   } else {
-    isAntdReady.value = true; // Set flag khi chuẩn bị sẵn sàng
+    isAntdReady.value = true; 
   }
 });
 
