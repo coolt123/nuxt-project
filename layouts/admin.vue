@@ -9,6 +9,7 @@
 
       <!-- Content Area -->
       <a-layout-content class="content">
+        <carousel/>
         <slot></slot>
       </a-layout-content>
       <a-layout-footer :style="{ textAlign: 'center' }">
@@ -19,9 +20,10 @@
   <div v-else>.....Đang tải giao diện</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import AdminSidebar from "~/components/admincomponent/AdminSidebar.vue";
 import AdminHeader from "~/components/admincomponent/AdminHeader.vue";
+import carousel from "~/components/carousel.vue";
 import { ref, onBeforeMount } from "vue";
 import { useAuth } from "~/composable/useAuth";
 const isAntdReady = ref(false);

@@ -1,3 +1,11 @@
 <template>
-    <h2>avc</h2>
+    <div class="main">
+        <carousel />
+        <h2>avc</h2>
+    </div>
+
+   
 </template>
+<script setup lang="ts">
+import carousel from '~/components/carousel.vue';
+</script>

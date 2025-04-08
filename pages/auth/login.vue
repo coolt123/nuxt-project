@@ -50,13 +50,12 @@ import { useAuth } from "~/composable/useAuth";
 import { useRouter } from "vue-router";
 definePageMeta({
   layout: false,
-  middleware:'authentication',
+  middleware: "authentication",
 });
 const isAntdReady = ref(false);
 onBeforeMount(() => {
   isAntdReady.value = true;
   // Giả lập trễ 0.5s để kiểm tra
-  
 });
 // Store Auth
 const { login, isAuthenticated, token, getEmail, getRole } = useAuth();
@@ -86,13 +85,19 @@ const onFinish = async (values: any) => {
     );
 
     if (response) {
-      login(response);
-      const checkmail = getEmail();
-      console.log("isAuthenticated after login:", isAuthenticated.value);
-      console.log("geteamil", checkmail);
-      const roles = getRole();
-      console.log("getrole", roles);
-      navigateTo("/");
+      await login(response);
+      await nextTick;
+      setTimeout(() => {
+        const checkmail = getEmail();
+        console.log("isAuthenticated after login:", isAuthenticated.value);
+        console.log("geteamil", checkmail);
+        const roles = getRole();
+        console.log("getrole", roles);
+        if (roles === 'Adminisrtator') {
+          return navigateTo("/admin");
+        }
+        return navigateTo("/");
+      }, 50);
     } else {
       alert("Tên đăng nhập hoặc mật khẩu không đúng!");
     }
