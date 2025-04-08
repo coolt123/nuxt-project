@@ -48,8 +48,7 @@
 <script setup lang="ts">
 import { object, string } from "yup";
 import { UserOutlined } from "@ant-design/icons-vue";
-import { useAuthStore } from "~/stores/auth";
-import { navigateTo } from "#app";
+
 
 definePageMeta({
   layout: false,
@@ -72,11 +71,12 @@ const onFinish = async (values: any) => {
   try {
     // Gửi request API để yêu cầu gửi email (dù không cần quan tâm đến phản hồi)
     const response = await $fetch<{ token?: string }>(
-      "http://localhost:5278/api/Account/ResetPassword", // Địa chỉ API
+      "http://localhost:5278/api/Account/ForgotPassword", // Địa chỉ API
       {
         method: "POST",
         body: {
           email: values.username,
+          clientUrl : "http://localhost:3000/auth/resetpassword" 
         },
       }
     );

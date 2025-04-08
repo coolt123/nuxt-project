@@ -1,14 +1,15 @@
 <template>
-  <a-layout style="min-height: 100vh;" v-if="isAntdReady">
+  <a-layout style="min-height: 100vh" v-if="isAntdReady">
     <!-- Sidebar -->
     <AdminSidebar />
 
-    <a-layout style="flex-direction: column;">
+    <a-layout style="flex-direction: column">
       <!-- Header -->
       <AdminHeader />
 
       <!-- Content Area -->
       <a-layout-content class="content">
+        <carousel/>
         <slot></slot>
       </a-layout-content>
       <a-layout-footer :style="{ textAlign: 'center' }">
@@ -16,21 +17,28 @@
       </a-layout-footer>
     </a-layout>
   </a-layout>
-  <div v-else>
-    .....Đang tải giao diện
-  </div>
+  <div v-else>.....Đang tải giao diện</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import AdminSidebar from "~/components/admincomponent/AdminSidebar.vue";
 import AdminHeader from "~/components/admincomponent/AdminHeader.vue";
+import carousel from "~/components/carousel.vue";
 import { ref, onBeforeMount } from "vue";
+import { useAuth } from "~/composable/useAuth";
 const isAntdReady = ref(false);
-
+const router = useRouter();
+const { getRole } = useAuth();
 onBeforeMount(() => {
-    isAntdReady.value = true;
- // Giả lập trễ 0.5s để kiểm tra
+  const role = getRole();
+  if (role !== "Adminisrtator") {
+    router.push("/");
+  } else {
+    isAntdReady.value = true; 
+  }
 });
+
+
 </script>
 
 <style scoped>
