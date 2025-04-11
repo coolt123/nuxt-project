@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Header from "~/components/Header.vue";
+import sidebarprofile from "~/components/sidebarprofile.vue";
 const isAntdReady = ref(false);
+
 onBeforeMount(() => {
     isAntdReady.value = true; 
 });
@@ -13,6 +15,7 @@ onBeforeMount(() => {
     </header>
 
     <main>
+        <sidebarprofile/>
       <slot />
       <a-back-top :visibility-height="0" />
     </main>

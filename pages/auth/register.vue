@@ -1,140 +1,149 @@
 <template>
-  <a-form
-    ref="formRef"
-    name="custom-validation"
-    :model="formState"
-    :rules="rules"
-    v-bind="layout"
-    @finish="handleFinish"
-    @validate="handleValidate"
-    @finishFailed="handleFinishFailed"
-  >
-    <a-form-item
-      label="Username"
-      name="username"
-      :rules="[{ required: true, message: 'Please input your username!' }]"
-    >
-      <a-input v-model:value="formState.username">
-        <template #prefix>
-          <UserOutlined class="site-form-item-icon" />
-        </template>
-      </a-input>
-    </a-form-item>
-    <a-form-item has-feedback label="Password" name="pass">
-      <a-input
-        v-model:value="formState.pass"
-        type="password"
-        autocomplete="off"
-      />
-    </a-form-item>
-    <a-form-item has-feedback label="Confirm" name="checkPass">
-      <a-input
-        v-model:value="formState.checkPass"
-        type="password"
-        autocomplete="off"
-      />
-    </a-form-item>
-    <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-      <a-button type="primary" html-type="submit">Submit</a-button>
-      <a-button style="margin-left: 10px" @click="resetForm">Reset</a-button>
-    </a-form-item>
-  </a-form>
+  <div class="register-page">
+    <div class="register-box">
+      <h1 class="title">Đăng ký tài khoản</h1>
+      <a-form
+        ref="formRef"
+        :model="formState"
+        :rules="rules"
+        layout="vertical"
+        @finish="handleFinish"
+        @finishFailed="handleFinishFailed"
+      >
+        <a-form-item label="Email" name="username">
+          <a-input
+            v-model:value="formState.username"
+            placeholder="Nhập email của bạn"
+            size="large"
+          />
+        </a-form-item>
+
+        <a-form-item label="Mật khẩu" name="pass">
+          <a-input-password
+            v-model:value="formState.pass"
+            placeholder="Mật khẩu"
+            size="large"
+          />
+        </a-form-item>
+
+        <a-form-item label="Xác nhận mật khẩu" name="checkPass">
+          <a-input-password
+            v-model:value="formState.checkPass"
+            placeholder="Nhập lại mật khẩu"
+            size="large"
+          />
+        </a-form-item>
+
+        <a-form-item>
+          <a-button type="primary" html-type="submit" block size="large">
+            Đăng ký
+          </a-button>
+          <a-button
+            style="margin-top: 12px"
+            block
+            @click="resetForm"
+            size="large"
+          >
+            Làm lại
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </div>
+  </div>
 </template>
+
 <script setup>
-import { reactive, ref } from "vue";
+import { ref, reactive } from "vue";
+definePageMeta({ layout: "default" });
+
 const formRef = ref();
-definePageMeta({layout:"admin",middleware:'authentication'})
 const formState = reactive({
   username: "",
   pass: "",
   checkPass: "",
 });
+
 const validatePass = async (_rule, value) => {
-  if (value === "") {
-    return Promise.reject("Please input the password");
-  } else {
-    if (formState.checkPass !== "") {
-      formRef.value.validateFields("checkPass");
-    }
-    return Promise.resolve();
+  if (!value) return Promise.reject("Vui lòng nhập mật khẩu");
+  if (formState.checkPass !== "") {
+    formRef.value.validateFields("checkPass");
   }
+  return Promise.resolve();
 };
+
 const validatePass2 = async (_rule, value) => {
-  if (value === "") {
-    return Promise.reject("Please input the password again");
-  } else if (value !== formState.pass) {
-    return Promise.reject("Two inputs don't match!");
-  } else {
-    return Promise.resolve();
-  }
+  if (!value) return Promise.reject("Vui lòng nhập lại mật khẩu");
+  if (value !== formState.pass) return Promise.reject("Mật khẩu không khớp");
+  return Promise.resolve();
 };
+
 const rules = {
-  pass: [
-    {
-      required: true,
-      validator: validatePass,
-      trigger: "change",
-    },
-  ],
-  checkPass: [
-    {
-      validator: validatePass2,
-      trigger: "change",
-    },
-  ],
+  username: [{ required: true, message: "Vui lòng nhập email" }],
+  pass: [{ validator: validatePass, trigger: "change" }],
+  checkPass: [{ validator: validatePass2, trigger: "change" }],
 };
-const layout = {
-  labelCol: {
-    span: 4,
-  },
-  wrapperCol: {
-    span: 14,
-  },
-};
-const handleFinishFailed = (errors) => {
-  console.log(errors);
-};
+
 const resetForm = () => {
   formRef.value.resetFields();
 };
-const handleValidate = (...args) => {
-  console.log(args);
+
+const handleFinishFailed = (errorInfo) => {
+  console.log("Thất bại:", errorInfo);
 };
+
 const handleFinish = async () => {
   try {
-    const { data, error } = await useFetch(
-      "http://localhost:5278/api/Account/SignUp",
-      {
-        method: "POST",
-        body: {
-          firstName: "tes",
-          lastName: "tgdd",
-          email: formState.username,
-          password: formState.pass,
-          confirmPassword: formState.checkPass,
-        },
-      }
-    );
+    const { data, error } = await useFetch("http://localhost:5278/api/Account/SignUp", {
+      method: "POST",
+      body: {
+        firstName: "tes",
+        lastName: "tgdd",
+        email: formState.username,
+        password: formState.pass,
+        confirmPassword: formState.checkPass,
+      },
+    });
 
     if (error.value) {
-      console.error("Đăng nhập thất bại:", error.value);
-      alert("Tên đăng nhập hoặc mật khẩu không đúng!");
+      alert("Đăng ký thất bại! " + error.value?.message);
       return;
     }
 
     if (data.value) {
-      // // Lưu token vào cookie
-      // document.cookie = `authToken=${encodeURIComponent(
-      //   data.value.token
-      // )}; max-age=86400; path=/; secure; SameSite=Strict`;
-
-      // Chuyển hướng đến trang quản trị
       navigateTo("/");
     } else {
-      alert("Đăng kí thất bại!");
+      alert("Đăng ký thất bại!");
     }
   } catch (err) {
     console.error("Lỗi khi gửi request:", err);
   }
 };
 </script>
+
+<style scoped>
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 24px;
+}
+
+.register-box {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 24px;
+  font-weight: 600;
+  color: #1890ff;
+}
+</style>
