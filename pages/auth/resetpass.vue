@@ -51,7 +51,7 @@ import { UserOutlined } from "@ant-design/icons-vue";
 
 
 definePageMeta({
-  layout: false,
+  layout: "admin",
 });
 
 const isAntdReady = ref(false);

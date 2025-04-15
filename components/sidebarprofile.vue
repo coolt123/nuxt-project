@@ -8,7 +8,9 @@
         mode="inline"
         :items="items"
         @openchange="onOpenChange"
+        @select="onMenuSelect"
         style="height: 100%"
+    
       />
     </div>
 
@@ -30,7 +32,7 @@ import {
 
 // Giả định Profile.vue đã là component khác, tránh import vòng lặp
 import profile from "~/pages/customer/profile.vue";
-import resetpassword from "~/pages/customer/resetpassword.vue";
+import resetpassword from "~/pages/auth/resetpassword.vue";
 import { useRouter } from 'vue-router';
 const router = useRouter();
 // Tạo item menu
@@ -84,12 +86,29 @@ const currentComponent = computed(() => {
   return componentMap[state.selectedKeys[0]] || null;
 });
 
-// const onMenuSelect = ({ key }: { key: string }) => {
-//   state.selectedKeys = [key];
-//   // điều hướng tùy theo key
-//   if (key === "1") router.push("/customer/profile");
-//   if (key === "2") router.push("/customer/resetpassword");
-// };
+const onMenuSelect = ({ key }: { key: string }) => {
+  state.selectedKeys = [key];
+  // điều hướng tùy theo key
+  if (key === "1") router.push("/customer/profile");
+  if (key === "2") router.push("/auth/resetpassword");
+};
+const route = useRoute();
+watch(
+  () => route.path,
+  (path) => {
+    if (path === "/customer/profile") {
+      state.selectedKeys = ["1"];
+      state.openKeys = ["sub1"];
+    } else if (path === "/customer/resetpassword") {
+      state.selectedKeys = ["2"];
+      state.openKeys = ["sub1"];
+    } else {
+      state.selectedKeys = [];
+      state.openKeys = [];
+    }
+  },
+  { immediate: true }
+);
 </script>
 <style scoped>
 .profile-wrapper {

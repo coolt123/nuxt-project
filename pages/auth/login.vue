@@ -49,9 +49,7 @@ import { navigateTo } from "#app";
 import { useAuth } from "~/composable/useAuth";
 import { useRouter } from "vue-router";
 definePageMeta({
-  layout: "default",
-  middleware: "authentication",
-});
+  layout: "default"});
 const isAntdReady = ref(false);
 onBeforeMount(() => {
   isAntdReady.value = true;
