@@ -1,7 +1,7 @@
 <template>
   <a-layout style="min-height: 100vh" v-if="isAntdReady">
     <!-- Sidebar -->
-    <AdminSidebar />
+
 
     <a-layout style="flex-direction: column">
       <!-- Header -->
@@ -9,7 +9,6 @@
 
       <!-- Content Area -->
       <a-layout-content class="content">
-        <carousel/>
         <slot></slot>
       </a-layout-content>
       <a-layout-footer :style="{ textAlign: 'center' }">

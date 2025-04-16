@@ -51,7 +51,7 @@ const router = useRouter();
 const token = ref("");
 const email = ref("");
 const formRef = ref();
-definePageMeta({ layout: false });
+definePageMeta({ layout: "customer" });
 onMounted(() => {
   token.value = route.query.token || "";
   email.value = route.query.email || "";

@@ -9,9 +9,9 @@
       <a-menu-item key="1">
         <NuxtLink to="/admin/User"> Home</NuxtLink>
       </a-menu-item>
-      <a-menu-item key="2"> <NuxtLink to="/admin/User"> Home</NuxtLink></a-menu-item>
-      <a-menu-item key="4">
-        <NuxtLink to="/admin/User"> register</NuxtLink>
+      <a-menu-item key="2"> <NuxtLink to="/admin/booklistadmin"> Book</NuxtLink></a-menu-item>
+      <a-menu-item key="3">
+        <NuxtLink to="/admin/author"> register</NuxtLink>
       </a-menu-item>
     </a-menu>
   </a-layout-header>
