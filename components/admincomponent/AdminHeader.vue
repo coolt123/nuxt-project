@@ -7,11 +7,17 @@
       :style="{ lineHeight: '64px' }"
     >
       <a-menu-item key="1">
-        <NuxtLink to="/admin/User"> Home</NuxtLink>
+        <NuxtLink to="/admin"> Home</NuxtLink>
       </a-menu-item>
       <a-menu-item key="2"> <NuxtLink to="/admin/booklistadmin"> Book</NuxtLink></a-menu-item>
       <a-menu-item key="3">
-        <NuxtLink to="/admin/author"> register</NuxtLink>
+        <NuxtLink to="/admin/author"> Author</NuxtLink>
+      </a-menu-item>
+      <a-menu-item key="4">
+        <NuxtLink to="/admin/categories"> Categories</NuxtLink>
+      </a-menu-item>
+      <a-menu-item key="5">
+        <NuxtLink to="/admin/User"> User</NuxtLink>
       </a-menu-item>
     </a-menu>
   </a-layout-header>

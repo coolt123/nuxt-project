@@ -1,27 +1,25 @@
 <template>
   <div class="p-6">
-    <h1 class="text-xl font-semibold mb-4">Danh sách sách</h1>
+    <h1 class="text-xl font-semibold mb-4">Danh sách thể loại</h1>
     <a-button
       type="primary"
       @click="
         () => {
-          selectedBook = null;
+          selected = null;
           showAddModal = true;
         }
       "
     >
-      Thêm sách
+      Thêm
     </a-button>
-
     <a-input
       v-model:value="search"
-      placeholder="Tìm kiếm sách..."
+      placeholder="Tìm kiếm thể loại..."
       style="width: 300px; margin-bottom: 16px; margin-left: 30px"
     />
-
     <a-table
       :columns="columns"
-      :data-source="books"
+      :data-source="Categori"
       :pagination="pagination"
       rowKey="id"
       class="mt-4"
@@ -29,10 +27,10 @@
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <a-space>
-            <a-button @click="editBook(record as Book)">Sửa</a-button>
+            <a-button @click="editBook(record as Categori)">Sửa</a-button>
             <a-popconfirm
               title="Bạn có chắc chắn muốn xóa sách này?"
-              @confirm="deleteBook(record.id)"
+              @confirm="deleteCategori(record.idGenres)"
             >
               <a-button danger>Xóa</a-button>
             </a-popconfirm>
@@ -42,61 +40,48 @@
     </a-table>
 
     <!-- Modal thêm/sửa sách -->
-    <BookFormModal
+    <CategoriesForm
       v-model:visible="showAddModal"
-      :book="selectedBook"
-      @refresh="fetchBooks"
+      :categori="selected"
+      @refresh="fetch"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useCrudList } from "~/composable/useCrudList";
-import BookFormModal from "~/components/BookFormModal.vue";
+import CategoriesForm from "~/components/CategoriesForm.vue";
 
 definePageMeta({
   layout: "admin",
   middleware: "adminauth",
 });
 
-interface Book {
-  id: number;
-  title: string;
-  authorName: string;
+interface Categori {
+  idGenres: number;
   nameGenres: string;
-  quantityInStock: number;
-  rentalPrice: number;
-  publishingYear: number;
 }
 
 const {
-  items: books,
-  selectedItem: selectedBook,
+  items: Categori,
+  selectedItem: selected,
   showModal: showAddModal,
-  fetchItems: fetchBooks,
+  fetchItems: fetch,
   editItem: editBook,
-  deleteItem: deleteBook,
+  deleteItem: deleteCategori,
   search,
-  
-} = useCrudList<Book>({
-  fetchUrl: "http://localhost:5278/api/Book/getall",
-  deleteUrl: (id) => `/api/admin/books/${id}`,
-  filterFn: (book, keyword) => {
-  const key = keyword.toLowerCase();
-  return (
-    book.title.toLowerCase().includes(key) ||
-    book.authorName.toLowerCase().includes(key) ||
-    book.nameGenres.toLowerCase().includes(key));
-}});
+} = useCrudList<Categori>({
+  fetchUrl: "http://localhost:5278/api/Genres/getall",
+  deleteUrl: (id) => `http://localhost:5278/api/Author/Delete?id=${id}`,
+  filterFn: (categori, keyword) =>
+    categori.nameGenres.toLowerCase().includes(keyword.toLowerCase()),
+});
 
 const pagination = { pageSize: 10 };
 
 const columns = [
-  { title: "Tiêu đề", dataIndex: "title" },
-  { title: "Tác giả", dataIndex: "authorName" },
+  { title: "ID", dataIndex: "idGenres" },
   { title: "Thể loại", dataIndex: "nameGenres" },
-  { title: "Tồn kho", dataIndex: "quantityInStock" },
-  { title: "Giá thuê", dataIndex: "publishingYear" },
   { title: "Hành động", dataIndex: "action", key: "action" },
 ];
 </script>
