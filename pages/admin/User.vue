@@ -14,7 +14,7 @@
     </a-button>
     <a-input
       v-model:value="search"
-      placeholder="Tìm kiếm thể loại..."
+      placeholder="Tìm kiếm người dùng ..."
       style="width: 300px; margin-bottom: 16px; margin-left: 30px"
     />
     <a-table
@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAuth } from "~/composable/useAuth";
 import { useCrudList } from "~/composable/useCrudList";
 
 
@@ -52,6 +53,7 @@ definePageMeta({
   middleware: "adminauth",
 });
 
+const {token}=useAuth();
 interface User {
   idUser: number;
   nameUser: string;
@@ -67,9 +69,17 @@ const {
   editItem: editBook,
   deleteItem: deleteCategori,
   search,
+  
 } = useCrudList<User>({
   fetchUrl: "http://localhost:5278/api/Account/getall",
   deleteUrl: (id) => `http://localhost:5278/api/Author/Delete?id=${id}`,
+  getToken:() => token.value || null ,
+  filterFn: (User, keyword) => {
+  const key = keyword.toLowerCase();
+  return (
+    User.nameUser.toLowerCase().includes(key) ||
+    User.email.toLowerCase().includes(key)) ;
+}
 });
 
 const pagination = { pageSize: 10 };
