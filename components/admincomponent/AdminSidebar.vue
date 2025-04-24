@@ -1,25 +1,25 @@
 <template>
   <a-layout-sider v-model:collapsed="collapsed" collapsible>
     <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
-      <a-menu-item key="1">
+      <a-menu-item key="5">
         <pie-chart-outlined />
         <span>
           <NuxtLink to="/admin/User">Home</NuxtLink>
         </span>
       </a-menu-item>
-      <a-menu-item key="2">
+      <a-menu-item key="6">
         <pie-chart-outlined />
         <span>
           <NuxtLink to="/admin/User">Home</NuxtLink>
         </span>
       </a-menu-item>
-      <a-menu-item key="3">
+      <a-menu-item key="7">
         <pie-chart-outlined />
         <span>
           <NuxtLink to="/admin/User">Home</NuxtLink>
         </span>
       </a-menu-item>
-      <a-menu-item key="4">
+      <a-menu-item key="8">
         <pie-chart-outlined />
         <span>
           <NuxtLink to="/admin/User">Home</NuxtLink>

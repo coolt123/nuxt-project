@@ -13,6 +13,12 @@
       Thêm sách
     </a-button>
 
+    <a-input
+      v-model:value="search"
+      placeholder="Tìm kiếm sách..."
+      style="width: 300px; margin-bottom: 16px; margin-left: 30px"
+    />
+
     <a-table
       :columns="columns"
       :data-source="books"
@@ -45,12 +51,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import BookFormModal from "../../components/BookFormModal.vue";
+import { useCrudList } from "~/composable/useCrudList";
+import BookFormModal from "~/components/BookFormModal.vue";
+
 definePageMeta({
-  layout: "admin",middleware:"adminauth"
+  layout: "admin",
+  middleware: "adminauth",
 });
-// Định nghĩa interface cho Book để giúp TypeScript suy luận kiểu dữ liệu
+
 interface Book {
   id: number;
   title: string;
@@ -61,13 +69,27 @@ interface Book {
   publishingYear: number;
 }
 
-const books = ref<Book[]>([]); // Định kiểu cho books là mảng các đối tượng Book
-const showAddModal = ref(false);
-const selectedBook = ref<Book | null>(null); // selectedBook có thể là một đối tượng Book hoặc null
+const {
+  items: books,
+  selectedItem: selectedBook,
+  showModal: showAddModal,
+  fetchItems: fetchBooks,
+  editItem: editBook,
+  deleteItem: deleteBook,
+  search,
+  
+} = useCrudList<Book>({
+  fetchUrl: "http://localhost:5278/api/Book/getall",
+  deleteUrl: (id) => `/api/admin/books/${id}`,
+  filterFn: (book, keyword) => {
+  const key = keyword.toLowerCase();
+  return (
+    book.title.toLowerCase().includes(key) ||
+    book.authorName.toLowerCase().includes(key) ||
+    book.nameGenres.toLowerCase().includes(key));
+}});
 
-const pagination = {
-  pageSize: 10,
-};
+const pagination = { pageSize: 10 };
 
 const columns = [
   { title: "Tiêu đề", dataIndex: "title" },
@@ -77,28 +99,4 @@ const columns = [
   { title: "Giá thuê", dataIndex: "publishingYear" },
   { title: "Hành động", dataIndex: "action", key: "action" },
 ];
-
-const fetchBooks = async () => {
-  try {
-    const res = await $fetch("http://localhost:5278/api/Book/getall");
-    books.value = res as Book[]; // Ép kiểu rõ ràng cho dữ liệu trả về là mảng Book
-  } catch (error) {
-    console.error("Lỗi khi tải dữ liệu sách", error);
-  }
-};
-
-const editBook = (book: Book) => {
-  // Định kiểu cho tham số book
-  selectedBook.value = book;
-  showAddModal.value = true;
-};
-
-const deleteBook = async (id: number) => {
-  await $fetch(`/api/admin/books/${id}`, { method: "DELETE" });
-  fetchBooks();
-};
-
-onMounted(() => {
-  fetchBooks();
-});
 </script>

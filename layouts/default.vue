@@ -47,7 +47,9 @@ header {
 main {
   flex: 1;
   padding: 0;
-  width: 100vw; 
+  width: 80%; 
+  margin-left: 10%;
+ 
 }
 
 /* Footer luôn nằm dưới cùng */
